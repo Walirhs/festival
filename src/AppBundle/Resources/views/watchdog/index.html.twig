@@ -1,0 +1,95 @@
+{% extends '@App/layout.html.twig' %}
+
+{%  block title %}Centre de surveillance {% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item">Centre de surveillance</li>
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <!-- First row -->
+    <div class="row">
+        <!-- First column -->
+        <div class="col-md-12">
+            <div class="row mb-1">
+                <div class="col-md-5">
+                    <div class="md-form">
+                        <input placeholder="Rechercher" type="search" class="form-control" id="search" data-column="0,1,2,3,4">
+                        <i class="clearInput fa fa-remove" data-input="search"></i>
+                    </div>
+                </div>
+                {% if logs|length > 0 %}
+                <div class="col-md-7">
+                    <div class="float-md-right">
+                        {{ form_start(clear_form, {'attr': {'class': 'd-inline', 'onSubmit': 'return confirm("' ~ confirm_message ~ '")'}}) }}
+                        <button type="submit" class="btn btn-danger"><i class="fa fa-trash left"></i> Vider les logs</button>
+                        {{ form_rest(clear_form) }}
+                        {{ form_end(clear_form) }}
+
+                        {{ include('@App/elements/export_button.html.twig', {'path': 'logs_export'}) }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-1" id="blocListLogs">
+                    <div class="card view hm-grey-light" style="position: relative">
+                        <div class="table-responsive">
+                            <table class="table tablesorter" id="listObjets">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Date / Heure</th>
+                                        <th>Utilisateur</th>
+                                        <th>Action</th>
+                                        <th>Objet</th>
+                                        <th>Identifiant / Nom</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for log in logs %}
+                                        <tr>
+                                            <td>{{ log.loggedAt|date('Y-m-d H:i:s') }}</td>
+                                            <td>{{ log.username }}</td>
+                                            <td>{{ log.actionLabel }}</td>
+                                            <td>{{ log.objectClassName }}</td>
+                                            <td>{{ log.objectName }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        <!-- /.First column -->
+        </div>
+    <!-- /.First row -->
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function() {
+            $("#listObjets").tablesorter({
+                theme: "bootstrap",
+                widgets : [ "filter", "print" ],
+                sortList: [[0,1]],
+                widgetOptions : {
+                    filter_external : '#search',
+                    filter_columnFilters: false,
+                    print_title      : 'Logs',
+                    print_now        : true,
+                    print_callback   : function(config, $table, printStyle){
+                        $table.find(".hidden-print").remove(); // Supprime les colonnes à masquer
+                        $.tablesorter.printTable.printOutput( config, $table.html(), printStyle );
+                    }
+                }
+            });
+
+            $('.clearInput').clearInput();
+            $('#printTable').click(function(){
+                $('#listObjets').trigger('printTable');
+            });
+        });
+    </script>
+{% endblock %}

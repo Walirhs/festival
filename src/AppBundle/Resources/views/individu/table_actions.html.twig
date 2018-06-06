@@ -1,0 +1,5 @@
+<a class="blue-text showBlockInfo" data-id="{{ individu.id }}" data-toggle="tooltip" data-placement="top" title="Voir"><i class="fa fa-eye"></i></a>
+{% if is_granted("ROLE_ADMIN") %}
+    <a class="orange-text" data-toggle="tooltip" data-placement="top" title="Modifier" href="{{ path('individu_edit', {'id': individu.id}) }}"><i class="fa fa-pencil"></i></a>
+    {{ render(controller('AppBundle:Individu:deleteForm', { 'individu' : individu })) }}
+{% endif %}

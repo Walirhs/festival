@@ -1,0 +1,291 @@
+{% extends '@App/layout.html.twig' %}
+
+{%  block title %}Gestion des individus {% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item">Gestion des individus</li>
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <!-- First row -->
+    <div class="row">
+        <!-- First column -->
+        <div class="col-md-12">
+            <div class="row mb-1">
+                <div class="col-md-5">
+                    <div class="md-form">
+                        <input placeholder="Rechercher" type="search" class="form-control" id="search" data-column="1,2,3,4,5">
+                        <i class="clearInput fa fa-remove" data-input="search"></i>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="float-md-right">
+                        {% if is_granted("ROLE_ADMIN") %}
+                            <a class="btn btn-dark-green" href="{{ path("individu_new") }}"><i class="fa fa-user-plus left"></i> Ajouter</a>
+                            <a class="btn btn-purple" href="{{ path("individu_import") }}"><i class="fa fa-file-excel-o left"></i> Importer</a>
+                        {% endif %}
+                        {% if individus.count > 0 %}
+                            {{ include('@App/elements/export_button.html.twig', {'path': 'individu_export'}) }}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-1" id="blocListIndividus">
+                    <div class="card view hm-grey-light" style="position: relative">
+                        <div class="table-responsive">
+                            <table class="table tablesorter" id="listObjets">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th class="hidden-print" data-sorter="false" data-checked="false" id="checkAll"><i class="fa fa-square-o"></i></th>
+                                        <th>Identifiant</th>
+                                        <th>Statut</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Email</th>
+                                        <th class="hidden-print" data-sorter="false">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for individu in individus %}
+                                        {{ include('@App/individu/row.html.twig', {'individu': individu}) }}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav class="pager-container flex-center" style="z-index: 0;">
+                            <ul class="pagination pg-dark">
+                                <li class="page-item pager-first {% if page == 1 %}disabled{% endif %}">
+                                    <a class="page-link" aria-label="Première page">
+                                        <span aria-hidden="true"><i class="fa fa-step-backward"></i></span>
+                                        <span class="sr-only">Dernière page</span>
+                                    </a>
+                                </li>
+                                <li class="page-item pager-prev {% if page == 1 %}disabled{% endif %}">
+                                    <a class="page-link" aria-label="Page précédente">
+                                        <span aria-hidden="true"><i class="fa fa-backward"></i></span>
+                                        <span class="sr-only">Page précédente</span>
+                                    </a>
+                                </li>
+
+                                {% for p in range(1, nbPages) %}
+                                    <li class="page-item pager-goto {% if p == page %}active{% endif %}" {% if p > 9 %}style="display: none;"{% endif %} value="{{ p }}">
+                                        <a class="page-link">{{ p }}</a>
+                                    </li>
+                                {% endfor %}
+
+                                <li class="page-item pager-next {% if page == nbPages %}disabled{% endif %}">
+                                    <a class="page-link" aria-label="Page suivante">
+                                        <span aria-hidden="true"><i class="fa fa-forward"></i></span>
+                                        <span class="sr-only">Page suivante</span>
+                                    </a>
+                                </li>
+                                <li class="page-item pager-last {% if page == nbPages %}disabled{% endif %}">
+                                    <a class="page-link" aria-label="Dernière page">
+                                        <span aria-hidden="true"><i class="fa fa-step-forward"></i></span>
+                                        <span class="sr-only">Dernière page</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        <div class="mask flex-center" id="pager-loader" style="display: none;">
+                            <div class="preloader-wrapper big active">
+                                <div class="spinner-layer spinner-blue-only">
+                                    <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                    </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                    </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal fade right" id="blocInfoIndividu" tabindex="-1" role="dialog" aria-labelledby="infoIndividu" aria-hidden="true">
+                    <div class="modal-dialog modal-full-height modal-right modal-notify modal-info" role="document">
+                        <div class="modal-content" id="contentInfoIndividu"></div>
+                    </div>
+                </div>
+            </div>
+            {% if is_granted("ROLE_ADMIN") %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row mb-1">
+                        <div class="col-md-2 mt-1">
+                            Pour la sélection :
+                        </div>
+                        <div class="col-md-10">
+                                {{ form_start(form_supprime_selection, {'attr' : {'id': 'deleteMultipleForm', 'class': 'form-inline-mdb'}}) }}
+                                    <button type="submit" class="btn btn-danger buttonActionCheck disabled" disabled="disabled" href="{{ path("individu_new") }}"><i class="fa fa-trash left"></i> Supprimer</button>
+                                {{ form_end(form_supprime_selection) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        <!-- /.First column -->
+        </div>
+    <!-- /.First row -->
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        function initLinesActions() {
+            $('.showBlockInfo').click(function() {
+                var url = "{{ path('individu_show', {'id': '0'}) }}";
+                url = url.replace("0", $(this).data('id'));
+                $.ajax({
+                      url: url,
+                      dataType: 'html',
+                      success: function(data) {
+                            $('#contentInfoIndividu').html(data);
+
+                            $('#blocInfoIndividu').modal('show');
+                      }
+                    });
+            });
+
+            $('.lineCheckbox').change(function() {
+                if ($('.lineCheckbox:checked').length > 0) {
+                    $('.buttonActionCheck').removeClass('disabled').prop('disabled', false);
+                }
+                else {
+                    $('.buttonActionCheck').addClass('disabled').prop('disabled', true);
+                }
+            });
+        }
+
+        $('#deleteMultipleForm').ajaxForm({
+            beforeSubmit: function(arr, $form, options) {
+                $('.lineCheckbox:checked').each(function() {
+                    var dataTable = { name: 'individus[]', value: $(this).data('id') };
+                    arr.push(dataTable);
+                });
+            },
+            success: function(responseText, statusText, xhr, $form) {
+               window.location.replace('{{ path('individu_index') }}');
+            },
+            error: function (xhr, status, error) {
+                var messages = $.parseJSON(xhr.responseText);
+                messages.each(function(key, values) {
+                    for (var i = 0; i < values.length; i++) {
+                        toastr.error(values[i]);
+                    }
+                });
+            }
+        });
+
+        $(function() {
+            $('#checkAll').click(function() {
+                if ($(this).data('checked')) {
+                    $('.lineCheckbox').prop('checked', false);
+                    $(this).find('i.fa').attr('class', 'fa fa-square-o');
+                    $(this).data('checked', false);
+                }
+                else {
+                    $('.lineCheckbox').prop('checked', true);
+                    $(this).find('i.fa').attr('class', 'fa fa-check-square-o');
+                    $(this).data('checked', true);
+                }
+                $('.lineCheckbox').trigger('change');
+            });
+
+            $("#listObjets").tablesorter({
+                theme: "bootstrap",
+                widgets : [ "filter", "print" ],
+                sortList: [[0,0]],
+                widgetOptions : {
+                    filter_external : '#search',
+                    filter_columnFilters: false,
+                    print_title      : 'Liste des individus',
+                    print_now        : true,
+                    print_callback   : function(config, $table, printStyle){
+                        $table.find(".hidden-print").remove(); // Supprime les colonnes à masquer
+                        $.tablesorter.printTable.printOutput( config, $table.html(), printStyle );
+                    }
+                }
+            })
+            .tablesorterPager({
+                container: $('.pager-container'),
+                ajaxUrl: "{{ path("individu_find") }}?page={page}&{sortList:col}",
+                customAjaxUrl: function(table, url) {
+                    $('#pager-loader').show();
+                    if ($('#search').val() != '') {
+                        url += "&search="+$('#search').val();
+                    }
+                    return url;
+                },
+                ajaxProcessing: function(data){
+                    if (data && data.hasOwnProperty('rows')) {
+                        var indx, r, row, c, d = data.rows,
+                        total = data.total_rows,
+                        rows = [],
+                        len = d.length;
+
+                        // rows
+                        for ( r=0; r < len; r++ ) {
+                            row = [];
+                            indx = 0;
+                            for ( c in d[r] ) {
+                                if (typeof(c) === "string") {
+                                    if (indx >= 0) {
+                                        row[indx++] = d[r][c];
+                                    }
+                                }
+                            }
+                            rows.push(row);
+                        }
+
+                        $(this.cssGoto).removeClass('active');
+
+                        $(this.cssGoto).hide();
+
+                        var page = this.page+1;
+                        var marge = 4;
+                        var margeMin = marge;
+                        var margeMax = marge;
+                        if (page <= marge) {
+                            margeMin = marge + (page - marge) - 1;
+                            margeMax = marge + (marge - page) + 1;
+                        }
+                        else if (page > (this.totalPages - marge)) {
+                            margeMin = 2 * marge - (this.totalPages - page);
+                            margeMax = this.totalPages - page;
+                        }
+                        $(this.cssGoto).filter(function() {
+                            return ($(this).val() >= page-margeMin && $(this).val() <= page+margeMax);
+                        }).show();
+
+                        var maxPagesVisible = Math.ceil(total/10);
+                        $(this.cssGoto).filter(function() {
+                            return ($(this).val() > maxPagesVisible);
+                        }).hide();
+
+                        $(this.cssGoto + '[value="'+(this.page+1)+'"]').addClass('active');
+
+                        return [ total, rows ];
+                    }
+                },
+
+                totalRows: {{ total }},
+                filteredRows: {{ total }}
+
+            })
+            .bind('pagerComplete', function(event, content){ // pagerChange pageMoved pagerComplete pagerInitialized
+                initLinesActions();
+                $('#pager-loader').hide();
+            });
+
+            $('.clearInput').clearInput();
+            $('#printTable').click(function(){
+                $('#listObjets').trigger('printTable');
+            });
+
+            initLinesActions();
+        });
+    </script>
+{% endblock %}

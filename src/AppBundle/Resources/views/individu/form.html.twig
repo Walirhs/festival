@@ -1,0 +1,65 @@
+<div class="text-center mb-1">
+    <a class="btn btn-blue-grey" href="{{ path("individu_index") }}"><i class="fa fa-arrow-circle-left left"></i> Retour à la gestion des individus</a>
+</div>
+
+{{ form_start(form, {'attr': {'class': 'd-inline'}}) }}
+
+{{ form_errors(form) }}
+
+<div class="md-form">
+    <i class="fa fa-user prefix"></i>
+    {{ form_widget(form.identifiant, {'attr': {'class': 'form-control'}}) }}
+    {{ form_label(form.identifiant, "Identifiant") }}
+    {{ form_errors(form.identifiant) }}
+</div>
+
+<div class="md-form">
+    {{ form_widget(form.statut, {'attr': {'class': 'mdb-select'}}) }}
+    {{ form_label(form.statut, "Statut") }}
+    {{ form_errors(form.statut) }}
+</div>
+
+<div class="md-form">
+    <i class="fa fa-info-circle prefix"></i>
+    {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+    {{ form_label(form.nom, "Nom") }}
+    {{ form_errors(form.nom) }}
+</div>
+
+<div class="md-form">
+    <i class="fa fa-info-circle prefix"></i>
+    {{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
+    {{ form_label(form.prenom, "Prénom") }}
+    {{ form_errors(form.prenom) }}
+</div>
+
+<div class="md-form">
+    <i class="fa fa-envelope prefix"></i>
+    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+    {{ form_label(form.email, "Adresse email") }}
+    {{ form_errors(form.email) }} 
+</div>
+
+<div class="md-form">
+    <i class="fa fa-phone prefix"></i>
+    {{ form_widget(form.telephone, {'attr': {'class': 'form-control'}}) }}
+    {{ form_label(form.telephone, "Téléphone") }}
+    {{ form_errors(form.telephone) }}
+</div>
+
+<div class="md-form">
+    <i class="fa fa-calendar prefix"></i>
+    {{ form_widget(form.dateNaissance, {'attr': {'class': 'form-control datepicker', 'placeholder': 'Sélectionner une date'}}) }}
+    {{ form_label(form.dateNaissance, "Date de naissance") }}
+    {{ form_errors(form.dateNaissance) }}
+</div>
+
+<div class="md-form">
+    {{ form_widget(form.groupes, {'attr': {'class': 'mdb-select'}}) }}
+    {{ form_label(form.groupes, "Groupes") }}
+    {{ form_errors(form.groupes) }}
+</div>
+
+<button type="submit" class="btn btn-primary">Enregistrer l'individu</button>
+
+{{ form_end(form) }}

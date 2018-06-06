@@ -1,0 +1,31 @@
+{{ form_start(form, {'attr': {'class': 'd-inline'}}) }}
+
+{{ form_errors(form) }}
+
+<div class="md-form">
+    {{ form_widget(form.nom) }}
+    {{ form_label(form.nom, "Nom") }}
+    {{ form_errors(form.nom) }}
+</div>
+
+<div class="md-form">
+    {{ form_widget(form.description) }}
+    {{ form_label(form.description, "Description") }}
+    {{ form_errors(form.description) }}
+</div>
+
+<div class="md-form">
+    {{ form_widget(form.individus) }}
+    {{ form_label(form.individus, "Individus") }}
+    {{ form_errors(form.individus) }}
+</div>
+
+<h3>Associations</h3>
+
+{{ form_row(form.associations) }}
+
+<button type="submit" class="btn btn-primary">Enregistrer</button>
+<button id="add_salle" class="btn btn-dark-green"><i class="fa fa-plus-circle left"></i> Ajouter une association</button>
+
+{{ form_end(form) }}
+

@@ -1,0 +1,93 @@
+{% extends "@App/layout.html.twig" %}
+{%  block title %}Gestion des comptes {% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active">Administration</li>
+    <li class="breadcrumb-item">Gestion des comptes</li>
+{% endblock %}
+{% block content %}
+
+    <div class="container-fluid">
+        <!-- First row -->
+        <div class="row">
+            <!-- First column -->
+            <div class="col-md-12">
+                <div class="row mb-1">
+                    <div class="col-md-6">
+                        <div class="md-form">
+                            <input placeholder="Rechercher" type="search" class="form-control" id="searchUser" data-column="1,2,3">
+                            <i class="clearInput fa fa-remove" data-input="searchUser"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="float-md-right">
+                            <a class="btn btn-dark-green" href="{{ path("admin_user_new") }}"><i class="fa fa-user-plus left"></i> Ajouter</a>
+
+                            {{ include('@App/elements/export_button.html.twig', {'path': 'admin_user_export'}) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 mb-1">
+                        <div class="card">
+                            <div class="table-responsive">
+                                <table class="table" id="listUsers">
+                                    <thead class="thead-inverse">
+                                        <tr>
+                                            <th>Identifiant</th>
+                                            <th>Email</th>
+                                            <th>Rôle</th>
+                                            <th class="hidden-print" data-sorter="false">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for user in users %}
+                                            <tr>
+                                                <td>{{ user.username }}</td>
+                                                <td>{{ user.email }}</td>
+                                                <td>{{ user.higherRoleText }}</td>
+                                                <td class="hidden-print">
+                                                    {% if 'ROLE_ADMIN' not in user.roles or user == app.user or is_granted("ROLE_SUPER_ADMIN") %}
+                                                    <a class="orange-text" data-toggle="tooltip" data-placement="top" title="Modifier" href="{{ path('admin_user_edit', {'id': user.id}) }}"><i class="fa fa-pencil"></i></a>
+                                                    {{ render(controller('UserBundle:User:deleteForm', { 'user' : user })) }}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.First column -->
+        </div>
+        <!-- /.First row -->
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function()
+            {
+                $("#listUsers").tablesorter({
+                    theme: "bootstrap",
+                    widgets : [ "filter", "print" ],
+                    widgetOptions : {
+                    filter_external : '#searchUser',
+                    filter_columnFilters: false,
+                    print_title      : 'Liste des utilisateurs',
+                    print_now        : true,
+                    print_callback   : function(config, $table, printStyle){
+                        $table.find(".hidden-print").remove(); // Supprime les colonnes à masquer
+                        $.tablesorter.printTable.printOutput( config, $table.html(), printStyle );
+                    }
+                    }
+                });
+
+                $('.clearInput').clearInput();
+                $('#printUsersTable').click(function(){
+                    $('#listUsers').trigger('printTable');
+                });
+            }
+        );
+    </script>
+{% endblock %}

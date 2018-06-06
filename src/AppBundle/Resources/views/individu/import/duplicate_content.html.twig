@@ -1,0 +1,13 @@
+<div {% if champ == 'identifiant' %}class='danger-color-border'{% endif %}><strong>Identifiant :</strong> {{ duplicate.identifiant }}</div>
+
+<div><strong>Statut :</strong> {{ duplicate.statut.libelle }}</div>
+
+<div {% if champ == 'nom' %}class='warning-color-border'{% endif %}><strong>Nom :</strong> {{ duplicate.nom }}</div>
+
+<div {% if champ == 'prenom' %}class='warning-color-border'{% endif %}><strong>Prénom :</strong> {{ duplicate.prenom }}</div>
+
+<div {% if champ == 'dateNaissance' %}class='warning-color-border'{% endif %}><strong>Date de naissance :</strong> {{ duplicate.dateNaissance|localizeddate('short', 'none') }}</div>
+
+<div {% if champ == 'email' %}class='warning-color-border'{% endif %}><strong>Email :</strong> {{ duplicate.email }}</div>
+
+<div {% if champ == 'telephone' %}class='warning-color-border'{% endif %}><strong>Téléphone :</strong> {{ duplicate.telephone }}</div>

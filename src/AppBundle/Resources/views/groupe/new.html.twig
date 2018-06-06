@@ -1,0 +1,100 @@
+{% extends '@App/layout.html.twig' %}
+{% set page_title = "Ajout d'un groupe" %}
+{%  block title %}{{ page_title }} {% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{{ path("groupe_index") }}">Gestion des groupes</a></li>
+    <li class="breadcrumb-item active">{{ page_title }}</li>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+
+        <div class="text-center">
+            <a class="btn btn-default" href="{{ path('groupe_index') }}"><i class="fa fa-arrow-circle-left left"></i> Retour à la liste des groupes</a>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-md-8 offset-md-2">
+                <div class="row">
+                    <div class="col-md-12 mb-1">
+
+                        <div class="card">
+                            <div class="card-block">
+                                {{ include("@App/groupe/form.html.twig") }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var $container = $('div#appbundle_groupe_associations');
+
+            var index = $container.find(':input').length;
+
+            $('#add_salle').click(function(e) {
+                addAssociation($container);
+
+                e.preventDefault();
+                return false;
+            });
+
+            if (index != 0) {
+                $container.children('div').each(function() {
+                    addDeleteLink($(this));
+                });
+            }
+
+            function addAssociation($container) {
+                var template = $container.attr('data-prototype')
+                    .replace(/__name__label__/g, 'Association n°' + (index+1))
+                    .replace(/__name__/g,        index)
+                ;
+
+                var $prototype = $(template);
+
+                addDeleteLink($prototype);
+
+                $container.find('.btn-floating').tooltip();
+
+                $container.append($prototype);
+
+                $prototype.find('.mdb-select').material_select();
+
+                $prototype.find('.select-dropdown').each(function() {
+                    var $ulSelect = $('#'+$(this).data('activates'));
+                    if ($ulSelect.hasClass('multiple-select-dropdown') && $ulSelect.find('li.active').length == 0)
+                        $(this).val('');
+                });
+
+                index++;
+            }
+
+            function addDeleteLink($prototype) {
+                var $deleteLink = $('<a class="btn-floating btn-small red" data-toggle="tooltip" data-placement="left" title="Supprimer l\'association"><i class="fa fa-trash-o left"></i></a>');
+
+                $prototype.append($deleteLink);
+                $prototype.find($deleteLink).wrap('<div class="col-md-1"></div>');
+                $prototype.addClass('row');
+                $prototype.children('div').first().addClass('col-md-11');
+
+
+                $deleteLink.click(function(e) {
+                    $(this).tooltip('dispose');
+
+                    $prototype.remove();
+
+                    e.preventDefault();
+                    return false;
+                });
+            }
+
+            $('.btn-floating').tooltip();
+        });
+    </script>
+{% endblock %}

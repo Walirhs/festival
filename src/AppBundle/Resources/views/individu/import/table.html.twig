@@ -1,0 +1,24 @@
+{% for line in lines %}
+    <tr class="{% if line.options.error or line.options.duplicate is not null %}table-danger{% elseif line.options.similar is not null %}table-warning{% endif %}">
+        <td class="colonneEtat">
+            {% if line.options.error or line.options.duplicate is not null %}
+                <span class="hiddendiv">danger</span>
+            {% elseif line.options.similar is not null %}
+                <span class="hiddendiv">warning</span>
+            {% else %}
+                <span class="hiddendiv">z</span>
+            {% endif %}
+            <i class="fa fa-{% if line.options.error or line.options.duplicate is not null or line.options.similar is not null %}exclamation{% else %}check{% endif %}"></i>
+        </td>
+        {{ include('@App/individu/import/cell.html.twig', {'line': line, 'champ': 'identifiant'}) }}
+        {{ include('@App/individu/import/cell.html.twig', {'line': line, 'champ': 'statut'}) }}
+        {{ include('@App/individu/import/cell.html.twig', {'line': line, 'champ': 'nom'}) }}
+        {{ include('@App/individu/import/cell.html.twig', {'line': line, 'champ': 'prenom'}) }}
+        {{ include('@App/individu/import/cell.html.twig', {'line': line, 'champ': 'dateNaissance'}) }}
+        {{ include('@App/individu/import/cell.html.twig', {'line': line, 'champ': 'email'}) }}
+        {{ include('@App/individu/import/cell.html.twig', {'line': line, 'champ': 'telephone'}) }}
+        <td>
+                <a title="Supprimer cet individu de l'import" data-toggle="tooltip" data-placement="bottom" class="deleteRow"><i class="fa fa-trash"></i></a>
+        </td>
+    </tr>
+{% endfor %}

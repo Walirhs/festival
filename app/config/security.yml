@@ -1,0 +1,36 @@
+# app/config/security.yml
+
+security:
+  encoders:
+    UserBundle\Entity\User: sha512
+
+  role_hierarchy:
+    ROLE_ADMIN: [ROLE_USER]
+    ROLE_SUPER_ADMIN: [ROLE_ADMIN]
+
+  providers:
+    main:
+      id: fos_user.user_provider.username
+
+  firewalls:
+    dev:
+      pattern: ^/(_(profiler|wdt)|css|images|js)/
+      security: false
+    main:
+      pattern: ^/
+      anonymous: true
+      provider: main
+      form_login:
+        login_path: fos_user_security_login
+        check_path: fos_user_security_check
+        default_target_path: /groupe
+      logout:
+        path: fos_user_security_logout
+        target: /
+      remember_me:
+        secret: "%secret%"
+
+  access_control:
+    - { path: ^/$, roles: IS_AUTHENTICATED_ANONYMOUSLY } # Accès à la page de login sans etre authentifié
+    - { path: ^/, roles: IS_AUTHENTICATED_REMEMBERED } # Accès à l'application (reste du site) une fois qu'on est connecté et reconnu
+    - { path: ^/admin, roles: ROLE_ADMIN } # Accès aux pages d'admin si on est admin

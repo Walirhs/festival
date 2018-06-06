@@ -1,0 +1,112 @@
+{% extends '@App/layout.html.twig' %}
+
+{%  block title %}Gestion des groupes {% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item">Gestion des groupes</li>
+{% endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <!-- First row -->
+    <div class="row">
+        <!-- First column -->
+        <div class="col-md-12">
+            <div class="row mb-1">
+                <div class="col-md-5">
+                    <div class="md-form">
+                        <input placeholder="Rechercher" type="search" class="form-control" id="search" data-column="0,1,2,3">
+                        <i class="clearInput fa fa-remove" data-input="search"></i>
+                    </div>
+                </div>
+                <div class="col-md-7">
+                    <div class="float-md-right">
+                        {% if is_granted("ROLE_ADMIN") %}
+                            <a class="btn btn-dark-green" href="{{ path("groupe_new") }}"><i class="fa fa-plus left"></i> Nouveau groupe</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 mb-1" id="blocListIndividus">
+                    <div class="card view hm-grey-light" style="position: relative">
+                        <div class="table-responsive">
+                            <table class="table tablesorter" id="listObjets">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th>Nom</th>
+                                        <th>Description</th>
+                                        <th>Nombre d'associations</th>
+                                        <th>Total d'individus</th>
+                                        <th class="hidden-print">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for groupe in groupes %}
+                                        <tr>
+                                            <td>{{ groupe.nom }}</td>
+                                            <td>{{ groupe.description }}</td>
+                                            <td>{{ groupe.associations|length }}</td>
+                                            <td>{{ groupe.allIndividus|length }}</td>
+                                            <td>
+                                                <a class="blue-text showBlockInfo" data-id="{{ groupe.id }}" data-toggle="tooltip" data-placement="top" title="Voir"><i class="fa fa-eye"></i></a>
+                                                {% if is_granted("ROLE_ADMIN") and app.user.hasAccess(groupe) %}
+                                                    <a class="orange-text" data-toggle="tooltip" data-placement="top" title="Modifier" href="{{ path('groupe_edit', {'id': groupe.id}) }}"><i class="fa fa-pencil"></i></a>
+                                                    <div class="d-none">A</div> {# Sert uniquement pour le tri #}
+                                                {% else %}
+                                                    <div class="d-none">Z</div> {# Sert uniquement pour le tri #}
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="modal fade right" id="blocInfoGroupe" tabindex="-1" role="dialog" aria-labelledby="infoGroupe" aria-hidden="true">
+                    <div class="modal-dialog modal-full-height modal-right modal-notify modal-info" role="document">
+                        <div class="modal-content" id="contentInfoGroupe"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.First column -->
+        </div>
+        <!-- /.First row -->
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function() {
+            $("#listObjets").tablesorter({
+                theme: "bootstrap",
+                widgets : [ "filter", "print" ],
+                sortList: [[4,0], [0,0]],
+                widgetOptions : {
+                    filter_external : '#search',
+                    filter_columnFilters: false,
+                    print_title      : 'Liste des individus',
+                    print_now        : true,
+                    print_callback   : function(config, $table, printStyle){
+                        $table.find(".hidden-print").remove(); // Supprime les colonnes à masquer
+                        $.tablesorter.printTable.printOutput( config, $table.html(), printStyle );
+                    }
+                }
+            });
+
+            $('.clearInput').clearInput();
+            $('#printTable').click(function(){
+                $('#listObjets').trigger('printTable');
+            });
+
+            $('.showBlockInfo').click(function() {
+                var url = "{{ path('groupe_show', {'id': '0'}) }}";
+                url = url.replace("0", $(this).data('id'));
+                $.get(url, function(data) {
+                    $('#contentInfoGroupe').html(data);
+                    $('#blocInfoGroupe').modal('show');
+                });
+            });
+        });
+    </script>
+{% endblock %}

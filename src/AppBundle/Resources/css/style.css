@@ -1,0 +1,101 @@
+/* YOUR CUSTOM STYLES */
+
+.user-box {
+    text-align: center;
+}
+
+.icon-logo {
+    text-shadow: rgb(48, 117, 165) 0px 0px 0px, rgb(49, 119, 168) 1px 1px 0px, rgb(50, 122, 171) 2px 2px 0px, rgb(51, 124, 175) 3px 3px 0px, rgb(51, 126, 178) 4px 4px 0px, rgb(52, 129, 181) 5px 5px 0px, rgb(53, 131, 185) 6px 6px 0px, rgb(54, 134, 188) 7px 7px 0px, rgb(55, 136, 191) 8px 8px 0px, rgb(56, 138, 195) 9px 9px 0px, rgb(57, 141, 198) 10px 10px 0px, rgb(58, 143, 201) 11px 11px 0px, rgb(59, 146, 205) 12px 12px 0px, rgb(60, 148, 208) 13px 13px 0px, rgb(61, 150, 212) 14px 14px 0px, rgb(62, 153, 215) 15px 15px 0px, rgb(63, 155, 218) 16px 16px 0px, rgb(64, 157, 222) 17px 17px 0px, rgb(65, 160, 225) 18px 18px 0px, rgb(66, 162, 228) 19px 19px 0px, rgb(67, 165, 232) 20px 20px 0px !important;
+    font-size: 80px !important;
+    color: rgb(255, 255, 255) !important;
+    height: 150px !important;
+    width: 150px !important;
+    line-height: 150px !important;
+    border-radius: 50% !important;
+    text-align: center !important;
+    background-color: rgb(68, 167, 235) !important;
+}
+
+
+.clearInput {
+    position: absolute;
+    right: 5px;
+    top: 5px;
+    bottom: 0;
+    height: 14px;
+    margin: auto;
+    font-size: 14px;
+    cursor: pointer;
+    color: #ccc;
+    visibility: hidden;
+}
+
+.clearInput:hover {
+    color: #4285F4;
+}
+
+.multiple-select-dropdown label {
+    top: 0 !important;
+}
+
+.clickable {
+    cursor: pointer !important;
+}
+
+.btn {
+    cursor: pointer !important;
+}
+
+[data-toggle="popover"] {
+    cursor: pointer;
+}
+
+.popover-content > div {
+    padding: 2px;
+}
+
+.danger-color-border {
+    border: 1px solid #ff4444 !important;
+    border-radius: 5px;
+}
+.warning-color-border {
+    border: 1px solid #ffbb33 !important;
+    border-radius: 5px;
+}
+
+.sticky[style*="position: fixed"] {
+    /*background-color: white;*/
+}
+
+.form-inline-mdb label {
+    top: -5px !important;
+}
+
+.form-inline-mdb input.select-dropdown {
+    margin-top: 6px !important;
+}
+
+.focused {
+    color: #0B51C5;
+}
+
+tr {
+    transition: background-color 1s;
+    -moz-transition: background-color 1s;
+    -webkit-transition: background-color 1s;
+}
+
+.pos-relative {
+    position: relative;
+}
+
+.listAssoc {
+    margin-left: 10px;
+}
+
+.listAssoc li {
+    list-style: circle inside;
+    padding: 0 !important;
+    border-bottom: 0 !important;
+    margin-left: 10px;
+}

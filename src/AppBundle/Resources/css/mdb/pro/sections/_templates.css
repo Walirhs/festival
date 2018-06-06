@@ -1,0 +1,39 @@
+.fixed-sn .double-nav,
+.fixed-sn main,
+.fixed-sn footer {
+  padding-left: 240px; }
+
+.fixed-sn main {
+  padding-top: 5.5rem; }
+
+@media (max-width: 1440px) {
+  .fixed-sn .double-nav,
+  .fixed-sn main,
+  .fixed-sn footer {
+    padding-left: 0; } }
+
+@media (min-width: 768px) {
+  .fixed-sn main {
+    margin-left: 2%;
+    margin-right: 2%; } }
+
+@media (min-width: 992px) {
+  .fixed-sn main {
+    margin-left: 5%;
+    margin-right: 5%; } }
+
+@media (min-width: 1400px) {
+  .fixed-sn main {
+    margin-left: 6%;
+    margin-right: 6%; } }
+
+.hidden-sn main {
+  padding-top: 5.5rem; }
+
+.hidden-sn .button-collapse {
+  display: block;
+  position: relative;
+  font-size: 1.4rem;
+  margin-right: 10px;
+  margin-left: -6px;
+  padding-left: 0; }

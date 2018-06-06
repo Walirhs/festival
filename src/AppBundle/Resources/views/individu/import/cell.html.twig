@@ -1,0 +1,11 @@
+{% set oChamp = attribute(line, champ) %}
+<td data-champ="{{ champ }}" class="waves-effect">
+    {% if champ == 'statut'%}<div contenteditable="false" class="d-inline-block">{{ oChamp.value.libelle }}{% else %}<div contenteditable="true" class="d-inline-block">{{ oChamp.value }}{% endif %}</div>
+    {% if oChamp.notFound %}
+        {{ include('@App/individu/import/not_found.html.twig') }}
+    {% elseif oChamp.duplicate %}
+        {{ include('@App/individu/import/duplicate.html.twig', {'duplicate': line.options.duplicate, 'champ': champ}) }}
+    {% elseif oChamp.similar %}
+        {{ include('@App/individu/import/similar.html.twig', {'similar': line.options.similar, 'champ': champ}) }}
+    {% endif %}
+</td>

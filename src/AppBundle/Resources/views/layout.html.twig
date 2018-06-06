@@ -1,0 +1,85 @@
+{%  extends "@App/base.html.twig" %}
+{% block body %}
+
+    <!--Double navigation-->
+    <header>
+        <!-- Sidebar navigation -->
+        <ul id="slide-out" class="side-nav fixed sn-bg-1 custom-scrollbar ovf-hidden">
+            <!-- Logo -->
+            <li>
+                <div class="user-box">
+                    <i id="icon" class="fa fa-group icon-logo animated flipInX"></i>
+                    <p class="user text-center black-text">{{ sitename }}</p>
+                </div>
+            </li>
+            <!--/. Logo -->
+            <!-- Side navigation links -->
+            <li>
+                <ul class="collapsible collapsible-accordion">
+                    {% include '@App/elements/li.layout.html.twig' with {'path_name': 'groupe_index', 'path_label': 'Groupes', 'path_icon': 'fa-th'} %}
+                    {% include '@App/elements/li.layout.html.twig' with {'path_name': 'individu_index', 'path_label': 'Individus', 'path_icon': 'fa-users'} %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        {% include '@App/elements/li.layout.html.twig' with {'path_name': 'individu_import', 'path_label': 'Importer', 'path_icon': 'fa-upload'} %}
+                    {% endif %}
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                        {% set is_admin_page = app.request.attributes.get('_route') starts with 'admin' %}
+                        <li {% if is_admin_page %}class="active"{% endif %}><a class="collapsible-header waves-effect arrow-r {% if is_admin_page %}active{% endif %}"><i class="fa fa-shield"></i> Administration<i class="fa fa-angle-down rotate-icon"></i></a>
+                            <div class="collapsible-body" {% if is_admin_page %}style="display: block"{% endif %}>
+                                <ul>
+                                    {% include '@App/elements/li.layout.html.twig' with {'path_name': 'admin_watch_index', 'path_label': 'Surveillance', 'path_icon': 'fa-eye'} %}
+                                    {% include '@App/elements/li.layout.html.twig' with {'path_name': 'admin_user_index', 'path_label': 'Comptes', 'path_icon': 'fa-user-circle'} %}
+                                </ul>
+                            </div>
+                        </li>
+                    {% endif %}
+                </ul>
+            </li>
+            <!--/. Side navigation links -->
+            <div class="sidenav-bg mask-strong"></div>
+        </ul>
+        <!--/. Sidebar navigation -->
+
+        <!-- Navbar -->
+        <nav class="navbar fixed-top navbar-toggleable-md navbar-dark scrolling-navbar double-nav">
+
+            <!-- SideNav slide-out button -->
+            <div class="float-left">
+                <a href="#" data-activates="slide-out" class="button-collapse"><i class="fa fa-bars"></i></a>
+            </div>
+
+            <!-- Breadcrumb-->
+            <ol class="breadcrumb hidden-lg-down">
+                {% block breadcrumb %}
+                {% endblock %}
+            </ol>
+
+            <!--Navbar links-->
+            <ul class="nav navbar-nav nav-flex-icons ml-auto">
+                <li class="nav-item dropdown animated bounceInRight">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-user-circle"></i> <span class="hidden-sm-down">{{ app.user }}</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-ins dropdown-menu-right" aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="{{ path('fos_user_profile_edit') }}">Mon compte</a>
+                        <a class="dropdown-item" href="{{ path("fos_user_security_logout") }}">Déconnexion</a>
+                    </div>
+                </li>
+            </ul>
+            <!--/Navbar links-->
+
+        </nav>
+        <!-- /.Navbar -->
+
+    </header>
+    <!--/.Double navigation-->
+
+    <!--Main layout-->
+    <main class="">
+        {% block content %}
+
+        {% endblock %}
+    </main>
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

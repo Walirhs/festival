@@ -1,0 +1,4 @@
+{{ form_start(delete_form, {'attr': {'class': 'd-inline', 'onSubmit': 'return confirm("' ~ confirm_message ~ '")'}}) }}
+<button type="submit" class="red-text btn-link clickable" data-toggle="tooltip" data-placement="top" title="Supprimer"><i class="fa fa-trash red-text"></i></button>
+{{ form_rest(delete_form) }}
+{{ form_end(delete_form) }}

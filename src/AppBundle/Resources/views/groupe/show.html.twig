@@ -1,0 +1,67 @@
+<div class="modal-header">
+    <p class="heading lead">{{ groupe.nom }}</p>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Fermer" title="Fermer">
+        <span aria-hidden="true" class="white-text">&times;</span>
+    </button>
+</div>
+<!--Body-->
+<div class="modal-body">
+    <div class="text-center">
+        <i class="fa fa-info-circle fa-4x mb-1 animated rotateIn"></i>
+    </div>
+    <ul class="striped">
+        <li><strong>Description :</strong> {{ groupe.description }}</li>
+        <li>
+            <div class="font-weight-bold text-center"><i class="fa fa-link"></i> Groupes liés :</div>
+            {% if groupe.associations|length > 0 %}
+                <div style="max-height: 200px; position:relative; overflow: auto;">
+                    {% for association in groupe.associations %}
+                    <ul class="listAssoc"><strong>{{ association.type }} :</strong>
+                            {% for grp in association.groupesAssocies %}
+                                <li>{{ grp.nom }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </li>
+        <li>
+            <div class="row">
+                <div class="font-weight-bold col-md-6"><i class="fa fa-group"></i> Individus ({{ groupe.allIndividus.count }}) :</div>
+
+                {% if groupe.allIndividus.count > 0 %}
+                    <div class="btn-group col-md-6">
+                        <button class="btn btn-pink btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-download left"></i> Exporter</button>
+
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{{ path("groupe_export", {id : groupe.id, format: "PDF"}) }}">PDF</a>
+                            <a class="dropdown-item" href="{{ path("groupe_export", {id : groupe.id, format: "Excel5"}) }}">Excel (xls)</a>
+                            <a class="dropdown-item" href="{{ path("groupe_export", {id : groupe.id, format: "Excel2007"}) }}">Excel (xlsx)</a>
+                            <a class="dropdown-item" href="{{ path("groupe_export", {id : groupe.id, format: "CSV"}) }}">CSV</a>
+                            <a class="dropdown-item" href="{{ path("groupe_export", {id : groupe.id, format: "OpenDocument"}) }}">OpenDocument</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            {% if groupe.allIndividus.count > 0 %}
+                <div style="max-height: 200px; position:relative; overflow: auto;">
+                    {% for individu in groupe.allIndividus %}
+                        <div>{{ individu.prenomNom }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </li>
+
+    </ul>
+
+</div>
+<!--Footer-->
+<div class="modal-footer">
+    {% if is_granted("ROLE_ADMIN") and app.user.hasAccess(groupe) %}
+        <a type="button" class="btn btn-orange" href="{{ path('groupe_edit', {'id': groupe.id}) }}"><i class="fa fa-pencil left"></i> Modifier</a>
+        {{ form_start(delete_form, {'attr': {'class': 'd-inline', 'onSubmit': 'return confirm("' ~ confirm_message ~ '")'}}) }}
+        <button type="submit" class="btn btn-danger align-content-center"><i class="fa fa-trash left"></i> Supprimer</button>
+        {{ form_rest(delete_form) }}
+        {{ form_end(delete_form) }}
+    {% endif %}
+</div>

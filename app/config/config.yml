@@ -1,0 +1,178 @@
+imports:
+    - { resource: parameters.yml }
+    - { resource: security.yml }
+    - { resource: services.yml }
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: fr
+    database_charset: AL32UTF8
+    database_service: true
+    database_driver: oci8
+
+framework:
+    #esi: ~
+    translator: { fallbacks: ['%locale%'] }
+    secret: '%secret%'
+    router:
+        resource: '%kernel.root_dir%/config/routing.yml'
+        strict_requirements: ~
+    form: ~
+    csrf_protection: ~
+    validation: { enable_annotations: true }
+    serializer: { enable_annotations: true }
+    templating:
+        engines: ['twig']
+    default_locale: '%locale%'
+    trusted_hosts: ~
+    trusted_proxies: ~
+    session:
+        # http://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        handler_id:  session.handler.native_file
+        save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
+    fragments: ~
+    http_method_override: true
+    assets: ~
+    php_errors:
+        log: true
+
+# Twig Configuration
+twig:
+    debug: '%kernel.debug%'
+    strict_variables: '%kernel.debug%'
+    form_themes:
+        - 'Form/mdb_4_layout.html.twig'
+
+# Doctrine Configuration
+doctrine:
+    dbal:
+        driver:   "%database_driver%"
+        host:     "%database_host%"
+        port:     "%database_port%"
+        dbname:   "%database_name%"
+        service:  "%database_service%"
+        user:     "%database_user%"
+        password: "%database_password%"
+        charset:  "%database_charset%"
+        # if using pdo_sqlite as your database driver:
+        #   1. add the path in parameters.yml
+        #     e.g. database_path: "%kernel.root_dir%/../var/data/data.sqlite"
+        #   2. Uncomment database_path in parameters.yml.dist
+        #   3. Uncomment next line:
+        #path: '%database_path%'
+
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+
+# Swiftmailer Configuration
+swiftmailer:
+    transport: '%mailer_transport%'
+    host: '%mailer_host%'
+    username: '%mailer_user%'
+    password: '%mailer_password%'
+    spool: { type: memory }
+
+fos_user:
+  db_driver: orm
+  firewall_name: main
+  user_class: UserBundle\Entity\User
+  from_email:
+    address: "noreply@u-paris10.fr"
+    sender_name: "No reply"
+
+assetic:
+  debug:          '%kernel.debug%'
+  use_controller: '%kernel.debug%'
+  assets:
+      font-awesome-otf:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/FontAwesome.otf'
+        output: 'fonts/FontAwesome.otf'
+      font-awesome-eot:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/fontawesome-webfont.eot'
+        output: 'fonts/fontawesome-webfont.eot'
+      font-awesome-svg:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/fontawesome-webfont.svg'
+        output: 'fonts/fontawesome-webfont.svg'
+      font-awesome-ttf:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/fontawesome-webfont.ttf'
+        output: 'fonts/fontawesome-webfont.ttf'
+      font-awesome-woff:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/fontawesome-webfont.woff'
+        output: 'fonts/fontawesome-webfont.woff'
+      font-awesome-woff2:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/fontawesome-webfont.woff2'
+        output: 'fonts/fontawesome-webfont.woff2'
+      roboto-bold-eot:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Bold.eot'
+        output: 'fonts/roboto/Roboto-Bold.eot'
+      roboto-bold-ttf:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Bold.ttf'
+        output: 'fonts/roboto/Roboto-Bold.ttf'
+      roboto-bold-woff:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Bold.woff'
+        output: 'fonts/roboto/Roboto-Bold.woff'
+      roboto-bold-woff2:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Bold.woff2'
+        output: 'fonts/roboto/Roboto-Bold.woff2'
+      roboto-light-eot:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Light.eot'
+        output: 'fonts/roboto/Roboto-Light.eot'
+      roboto-light-ttf:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Light.ttf'
+        output: 'fonts/roboto/Roboto-Light.ttf'
+      roboto-light-woff:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Light.woff'
+        output: 'fonts/roboto/Roboto-Light.woff'
+      roboto-light-woff2:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Light.woff2'
+        output: 'fonts/roboto/Roboto-Light.woff2'
+      roboto-medium-eot:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Medium.eot'
+        output: 'fonts/roboto/Roboto-Medium.eot'
+      roboto-medium-ttf:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Medium.ttf'
+        output: 'fonts/roboto/Roboto-Medium.ttf'
+      roboto-medium-woff:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Medium.woff'
+        output: 'fonts/roboto/Roboto-Medium.woff'
+      roboto-medium-woff2:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Medium.woff2'
+        output: 'fonts/roboto/Roboto-Medium.woff2'
+      roboto-regular-eot:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Regular.eot'
+        output: 'fonts/roboto/Roboto-Regular.eot'
+      roboto-regular-ttf:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Regular.ttf'
+        output: 'fonts/roboto/Roboto-Regular.ttf'
+      roboto-regular-woff:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Regular.woff'
+        output: 'fonts/roboto/Roboto-Regular.woff'
+      roboto-regular-woff2:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Regular.woff2'
+        output: 'fonts/roboto/Roboto-Regular.woff2'
+      roboto-thin-eot:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Thin.eot'
+        output: 'fonts/roboto/Roboto-Thin.eot'
+      roboto-thin-ttf:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Thin.ttf'
+        output: 'fonts/roboto/Roboto-Thin.ttf'
+      roboto-thin-woff:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Thin.woff'
+        output: 'fonts/roboto/Roboto-Thin.woff'
+      roboto-thin-woff2:
+        inputs: '%kernel.root_dir%/Resources/public/fonts/roboto/Roboto-Thin.woff2'
+        output: 'fonts/roboto/Roboto-Thin.woff2'
+  filters:
+    cssrewrite: ~
+    jsqueeze:   ~
+    scssphp:
+      formatter: 'Leafo\ScssPhp\Formatter\Compressed'
+
+stof_doctrine_extensions:
+    default_locale: fr
+    orm:
+        default:
+            loggable: true

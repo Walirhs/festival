@@ -1,0 +1,16 @@
+{% extends "@App/base.html.twig" %}
+{% block body %}
+    <div>
+    {% block fos_user_content %}
+        {{ include('@FOSUser/Security/login_content.html.twig') }}
+    {% endblock fos_user_content %}
+
+    {% block javascripts %}
+        <script type="text/javascript">
+            {% if error %}
+                toastr.error("{{ error.messageKey|trans(error.messageData, 'security') }}");
+            {% endif %}
+        </script>
+    {% endblock %}
+    </div>
+{% endblock %}

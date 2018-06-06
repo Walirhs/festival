@@ -1,0 +1,290 @@
+{% extends '@App/layout.html.twig' %}
+
+{%  block title %}Import d'individus {% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="{{ path('individu_index') }}">Gestion des individus</a></li>
+    <li class="breadcrumb-item active">Import</li>
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="text-primary">Pour que l'import fonctionne, votre fichier doit contenir les mêmes entêtes que le tableau ci-dessous. L'ordre n'a pas d'importance, assurez-vous juste qu'il contient bien les libellés exacts des colonnes.</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-block" style="position: relative;">
+                        {{ form_start(importForm, {'attr' : {'id': 'formFichier'}}) }}
+                        {{ form_widget(importForm.file, {'attr': {'accept': mimesTypes}}) }}
+                        {{ form_end(importForm) }}
+                        <div id="progressFile" class="progress mb-0" style="position: absolute; left: 0; bottom: 0;">
+                            <div class="progress-bar" id="fileProgress" role="progressbar" style="width: 0;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-1 mt-1 float-md-left col-md-4">
+                <div class="md-form">
+                    <input placeholder="Rechercher" type="search" class="form-control search" id="search" data-column="0,1,2,3,4,5,6,7">
+                    <i class="clearInput fa fa-remove" data-input="search"></i>
+                </div>
+            </div>
+
+            {{ form_start(submitForm, {'attr' : {'id': 'submitForm', 'class': 'mb-1 mt-1 float-md-right form-inline-mdb'}}) }}
+                <div class="d-inline-block mr-5 pos-relative" style="width: 350px;">
+                    {{ form_widget(submitForm.groupes, {'attr': {'class': 'mdb-select'}}) }}
+                    {{ form_label(submitForm.groupes) }}
+                </div>
+                <button id="buttonSubmit" type="submit" class="btn btn-dark-green disabled float-md-right" disabled><i class="fa fa-save left"></i> Enregistrer</button>
+            {{ form_end(submitForm) }}
+
+            <div class="clearfix"></div>
+
+            <div class="row">
+                <div class="col-md-12 mb-1" id="blocListIndividus">
+                    <div class="card view hm-grey-light" style="position: relative">
+                        <div class="table-responsive">
+                            <table class="table tablesorter" id="listObjets">
+                                <thead class="thead-inverse">
+                                    <tr>
+                                        <th class="text-center"><i class="fa fa-check-circle-o"></i></th>
+                                        <th>Identifiant</th>
+                                        <th>Statut</th>
+                                        <th>Nom</th>
+                                        <th>Prénom</th>
+                                        <th>Date de naissance</th>
+                                        <th>Email</th>
+                                        <th>Téléphone</th>
+                                        <th data-sorter="false" class="text-center"><i class="fa fa-trash-o"></i></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="9">Sélectionnez un fichier à importer...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mask flex-center" id="pager-loader" style="display: none;">
+                            <div class="preloader-wrapper big active">
+                                <div class="spinner-layer spinner-blue-only">
+                                    <div class="circle-clipper left">
+                                    <div class="circle"></div>
+                                    </div><div class="gap-patch">
+                                    <div class="circle"></div>
+                                    </div><div class="circle-clipper right">
+                                    <div class="circle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        function initTableSorter() {
+            // Détruit l'éventuel tableau précédent
+            $('#listObjets').trigger('destroy');
+
+            $("#listObjets td").click(function(event) {
+                $(this).find('div[contenteditable="true"]').trigger('focus');
+            });
+            $('.deleteRow').click(function() {
+                $(this).tooltip('dispose').closest('tr').remove();
+                $('#listObjets').trigger('update');
+                reloadInitJsTable();
+            });
+            $("#listObjets").tablesorter({
+                theme: "bootstrap",
+                widgets : [ "filter", "editable" ],
+                sortList: [[0,0]],
+                widgetOptions : {
+                    filter_external : '.search',
+                    filter_columnFilters: false,
+                    editable_columns: [1, 2, 3, 4, 5, 6, 7],
+                    editable_enterToAccept : true,
+                    editable_autoAccept    : true,
+                    editable_autoResort    : true,
+                    editable_validate      : function(text, original, columnIndex, $element) {
+                        var dataContent = {};
+                        $line = $element.closest('tr');
+                        var returnText = text;
+
+                        $line.children('td[data-champ!=""][data-champ]').each(function() {
+                            dataContent[$(this).data('champ')] = $(this).children('div').text();
+                        });
+
+                        $.ajax({
+                            type: 'GET',
+                            async: false,
+                            url: '{{ path('individu_import_check_line') }}',
+                            data: {'data': dataContent},
+                            success: function(data, textStatus, xhr) {
+                                if (columnIndex == 2 && data.wrongStatus) {
+                                    returnText = original;
+                                }
+                                else {
+                                    $line.removeClass();
+
+                                    $line.children('td[data-champ!=""][data-champ]').each(function() {
+                                        $(this).find('a.stateIcon').remove();
+                                        if (typeof data.icons[$(this).data('champ')] !== 'undefined') {
+                                            $(this).append(data.icons[$(this).data('champ')]);
+                                        }
+                                    });
+
+                                    if (data.typeError != '') {
+                                        $line.addClass('table-'+data.typeError);
+                                        $line.find('td.colonneEtat').html('<span class="hiddendiv">'+data.typeError+'</span><i class="fa fa-exclamation"></i>');
+                                        initIconAction();
+                                    }
+                                    else {
+                                        $line.addClass('table-success');
+                                        $line.find('td.colonneEtat').html('<span class="hiddendiv">z</span><i class="fa fa-check"></i>');
+                                        setTimeout( function() {
+                                            $line.removeClass('table-success');
+                                        }, 500);
+                                    }
+
+                                    $('#listObjets').trigger('update');
+
+                                    reloadInitJsTable();
+                                }
+                            }
+                        });
+
+                        return returnText;
+                    },
+                    editable_focused       : function(txt, columnIndex, $element) {
+                      // $element is the div, not the td
+                      // to get the td, use $element.closest('td')
+                      $element.addClass('focused');
+                    },
+                    editable_blur          : function(txt, columnIndex, $element) {
+                      // $element is the div, not the td
+                      // to get the td, use $element.closest('td')
+                      $element.removeClass('focused');
+                    },
+                    editable_selectAll     : function(txt, columnIndex, $element){
+                      // Sélectionne l'identifiant en entier au clic sur la colonne
+                      return columnIndex === 0;
+                    },
+                    editable_wrapContent   : '<div>',
+                    editable_trimContent   : true,
+                    editable_noEdit        : 'no-edit',
+                    editable_editComplete  : 'editComplete' // Event déclenché après l'édition
+                }
+            });
+            reloadInitJsTable();
+        }
+
+        $('#formFichier input[type="file"]').change(function() {
+            if (typeof $(this).val() !== 'undefined' && $(this).val() != '') {
+                $('#formFichier').submit();
+            }
+        });
+
+        $('#formFichier').submit(function(e) {
+            e.preventDefault();
+
+            $(this).ajaxSubmit({
+                beforeSubmit: function(arr, $form, options) {
+                    $('#pager-loader').show();
+                    $('#progressFile').show();
+                },
+                uploadProgress: function(event, pos, total, percentComplete) {
+                    $('#fileProgress').width(percentComplete+'%').attr('aria-valuenow', percentComplete);
+                },
+                success: function(responseText, statusText, xhr, $form) {
+                    $('#pager-loader').hide();
+                    $('#progressFile').hide();
+                    $('#listObjets > tbody').html('').html(responseText);
+                    initIconAction();
+                    initTableSorter();
+                },
+                error: ajaxFormError
+            });
+        });
+
+        $('#submitForm').ajaxForm({
+            beforeSubmit: function(arr, $form, options) {
+                $('#listObjets tbody tr').each(function() {
+                    var data = {};
+                    $(this).children('td[data-champ!=""][data-champ]').each(function() {
+                        data[$(this).data('champ')] = $(this).children('div').text();
+                    });
+
+                    var dataTable = { name: 'lines[]', value: JSON.stringify(data) };
+                    arr.push(dataTable);
+                });
+            },
+            success: function(responseText, statusText, xhr, $form) {
+               window.location.replace('{{ path('individu_index') }}');
+            },
+            error: ajaxFormError
+        });
+
+        $('.clearInput').clearInput();
+
+
+        function ajaxFormError(xhr, status, error) {
+            var messages = $.parseJSON(xhr.responseText);
+            messages.each(function(key, values) {
+                for (var i = 0; i < values.length; i++) {
+                    toastr.error(values[i]);
+                }
+            });
+            $('#progressFile').hide();
+            $('#pager-loader').hide();
+        }
+
+        function initIconAction() {
+            $('[data-toggle="tooltip"]').tooltip();
+            $('[data-toggle="popover"]').each(function() {
+                var classes = 'text-center white-text font-weight-bold';
+                if ($(this).data('type') == 'duplicate') {
+                    classes += ' danger-color'
+                }
+                else if ($(this).data('type') == 'similar') {
+                    classes += ' warning-color'
+                }
+                $(this).popover({
+                    html: true,
+                    template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><h3 class="popover-title '+classes+'"></h3><div class="popover-content"></div></div>'
+                });
+            });
+        }
+
+        function reloadInitJsTable() {
+            $("#listObjets td a").click(function(event) {
+                event.stopPropagation();
+            });
+            if ($('.table-danger').length == 0) {
+                $('#buttonSubmit').removeClass('disabled').prop('disabled', false);
+                if ($('.table-warning').length == 0) {
+                    toastr.success('Tout est ok, vous pouvez enregistrer les individus !', 'Données valides');
+                }
+                else {
+                    toastr.warning('Il y a un risque de doublon, mais si vous pensez que c\'est bon, vous pouvez enregistrer !', 'Données valides', {timeOut: 10000});
+                }
+            }
+            else {
+                $('#buttonSubmit').addClass('disabled').prop('disabled', true);
+            }
+        }
+    </script>
+{% endblock %}

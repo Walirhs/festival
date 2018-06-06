@@ -1,0 +1,15 @@
+<div class="btn-group">
+    <button class="btn btn-pink dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-download left"></i> {{ label|default('Tout exporter') }}</button>
+
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="{{ path(path, {format: "PDF"}) }}">PDF</a>
+        <a class="dropdown-item" href="{{ path(path, {format: "Excel5"}) }}">Excel (xls)</a>
+        <a class="dropdown-item" href="{{ path(path, {format: "Excel2007"}) }}">Excel (xlsx)</a>
+        <a class="dropdown-item" href="{{ path(path, {format: "CSV"}) }}">CSV</a>
+        <a class="dropdown-item" href="{{ path(path, {format: "OpenDocument"}) }}">OpenDocument</a>
+        {% if print|default(true) %}
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" id="printTable">Imprimer</a>
+        {% endif %}
+    </div>
+</div>

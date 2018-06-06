@@ -1,0 +1,25 @@
+user:
+  resource: "@UserBundle/Controller/"
+  type:     annotation
+
+app:
+  resource: '@AppBundle/Controller/'
+  type: annotation
+
+# On charge les routes de base du Bundle User
+fos_user:
+  resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+
+# On redéfini la route du login sur l'index
+fos_user_security_login:
+  path: /
+  defaults:  { _controller: FOSUserBundle:Security:login }
+
+fos_user_profile_edit:
+  path: /profile/edit
+  defaults:  { _controller: FOSUserBundle:Profile:edit }
+
+fos_user_change_password:
+  path: /change-password
+  defaults:  { _controller: FOSUserBundle:ChangePassword:changePassword }

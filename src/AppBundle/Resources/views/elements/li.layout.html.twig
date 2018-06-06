@@ -1,0 +1,5 @@
+<li {% if app.request.attributes.get('_route') starts with path_name %}class="active"{% endif %}>
+    <a href="{{ path(path_name) }}" class="collapsible-header waves-effect arrow-r {% if app.request.attributes.get('_route') starts with path_name %}active{% endif %}">
+        {% if path_icon is defined %}<i class="fa {{ path_icon }}"></i>{% endif %} {{ path_label }}
+    </a>
+</li>

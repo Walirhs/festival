@@ -1,0 +1,17 @@
+<tr>
+    <td class="hidden-print">
+        {{ include('@App/individu/checkbox.html.twig', {'individu' : individu}) }}
+    </td>
+    <td>{{ individu.identifiant }}</td>
+    <td>{{ individu.statut.libelle }}</td>
+    <td>{{ individu.nom }}</td>
+    <td>{{ individu.prenom }}</td>
+    <td>{{ individu.email }}</td>
+    <td class="hidden-print">
+        <a class="blue-text showBlockInfo" data-id="{{ individu.id }}" data-toggle="tooltip" data-placement="top" title="Voir"><i class="fa fa-eye"></i></a>
+        {% if is_granted("ROLE_ADMIN") %}
+            <a class="orange-text" data-toggle="tooltip" data-placement="top" title="Modifier" href="{{ path('individu_edit', {'id': individu.id}) }}"><i class="fa fa-pencil"></i></a>
+            {{ render(controller('AppBundle:Individu:deleteForm', { 'individu' : individu })) }}
+        {% endif %}
+    </td>
+</tr>

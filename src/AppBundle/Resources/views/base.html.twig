@@ -1,0 +1,83 @@
+{% set sitename = "Gestion des groupes" %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{% block title %}{{ sitename }}{% endblock %}</title>
+        {% block stylesheets %}
+            {% stylesheets filter="cssrewrite, ?scssphp"
+                "%kernel.root_dir%/Resources/public/css/font-awesome.css"
+                "@AppBundle/Resources/css/bootstrap.css"
+                "%kernel.root_dir%/Resources/public/css/mdb.css"
+                "%kernel.root_dir%/Resources/public/css/mdb_admin.css"
+                "@AppBundle/Resources/css/style.css"
+                "@AppBundle/Resources/css/tablesorter/theme.bootstrap_4.css"
+            %}
+            <link rel="stylesheet" href="{{ asset_url }}" />
+            {% endstylesheets %}
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body class="fixed-sn white-skin">
+    {% block body %}
+    {% endblock %}
+
+    {% javascripts filter='?jsqueeze'
+        '@AppBundle/Resources/js/jquery-3.1.1.js'
+        '@AppBundle/Resources/js/tether.js'
+        '@AppBundle/Resources/js/bootstrap.js'
+        '@AppBundle/Resources/js/mdb.js'
+        '@AppBundle/Resources/js/modules (optional)/toasts.js'
+        '@AppBundle/Resources/js/tablesorter/jquery.tablesorter.js'
+        '@AppBundle/Resources/js/tablesorter/jquery.tablesorter.widgets.js'
+        '@AppBundle/Resources/js/tablesorter/jquery.tablesorter.pager.js'
+        '@AppBundle/Resources/js/tablesorter/widget-print.js'
+        '@AppBundle/Resources/js/tablesorter/widget-editable.js'
+        '@AppBundle/Resources/js/jquery.form.js'
+        '@AppBundle/Resources/js/global.js'
+    %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    <script type="text/javascript">
+        function initMdbSelect() {
+
+        }
+        $(function() {
+            // Initialisation de la barre de navigation à gauche
+            $(".button-collapse").sideNav();
+
+            // Initialisation des material select
+            $('.mdb-select').material_select();
+
+            $('.select-dropdown').each(function() {
+                var $ulSelect = $('#'+$(this).data('activates'));
+                if ($ulSelect.hasClass('multiple-select-dropdown') && $ulSelect.find('li.active').length == 0)
+                    $(this).val('');
+            });
+
+            // Met la valeur du champ dans un "data-value" pour être correctement géré par le pickadate
+            $('.datepicker').each(function() {
+                if (typeof $(this).val() !== 'undefined' && $(this).val() != '')
+                    $(this).data('value', $(this).val()).val('');
+
+               $(this).pickadate();
+            });
+
+            // Tooltips Initialization
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Affichage des messages info, error, warning, success
+            {% for type, messages in app.session.flashbag.all() %}
+                {% for message in messages %}
+                    toastr.{{ type }}("{{ message }}");
+                {% endfor %}
+            {% endfor %}
+        });
+    </script>
+    {% block javascripts %}
+    {% endblock %}
+    </body>
+</html>

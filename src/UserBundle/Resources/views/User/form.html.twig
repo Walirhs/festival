@@ -1,0 +1,52 @@
+<div class="text-center mb-1">
+    <a class="btn btn-blue-grey" href="{{ path("admin_user_index") }}"><i class="fa fa-arrow-circle-left left"></i> Retour à la gestion des utilisateurs</a>
+</div>
+
+{{ form_start(form, {'attr': {'class': 'd-inline'}}) }}
+
+{{ form_errors(form) }}
+
+<div class="md-form">
+    <i class="fa fa-user prefix"></i>
+    {{ form_widget(form.username, {'attr': {'class': 'form-control'}}) }}
+    {{ form_label(form.username, "Identifiant") }}
+    {{ form_errors(form.username) }} 
+</div>
+
+<div class="md-form">
+    <i class="fa fa-envelope prefix"></i>
+    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+    {{ form_label(form.email, "Adresse email") }}
+    {{ form_errors(form.email) }} 
+</div>
+
+{% if user is defined %}
+    <p class="text-info"><i class="fa fa-info-circle"></i> Si vous ne voulez pas modifier le mot de passe, laissez ces champs vides.</p>
+{% endif %}
+
+<div class="md-form">
+    <i class="fa fa-key prefix"></i>
+    {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+    {{ form_label(form.plainPassword.first, "Mot de passe") }}
+    {{ form_errors(form.plainPassword.first) }} 
+</div>
+
+<div class="md-form">
+    <i class="fa fa-key prefix"></i>
+    {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+    {{ form_label(form.plainPassword.second, "Confirmation du mot de passe") }}
+    {{ form_errors(form.plainPassword.second) }} 
+</div>
+
+<div class="md-form">
+    {{ form_widget(form.roles) }}
+</div>
+
+<div class="md-form">
+    {{ form_widget(form.groupesAcces) }}
+    {{ form_label(form.groupesAcces) }}
+</div>
+
+<button type="submit" class="btn btn-primary">Enregistrer l'utilisateur</button>
+
+{{ form_end(form) }}

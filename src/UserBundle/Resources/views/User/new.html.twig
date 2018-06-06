@@ -1,0 +1,42 @@
+{% extends "@App/layout.html.twig" %}
+{%  block title %}Création d'un utilisateur{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active">Administration</li>
+    <li class="breadcrumb-item active"><a href="{{ path("admin_user_index") }}">Gestion des comptes</a></li>
+    <li class="breadcrumb-item">Création d'un utilisateur</li>
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <!-- First row -->
+    <div class="row">
+        <!-- First column -->
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12 mb-1">
+                    <div class="card">
+                        <div class="card-block">
+                            {{ include("@User/User/form.html.twig") }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(function() {
+            $('#user_edit_form_roles_0').change(function() {
+                if ($(this).val() == 'ROLE_SUPER_ADMIN') {
+                    $('#user_edit_form_groupesAcces').prop('disabled', true).parent('div').children('input.select-dropdown').prop('disabled', true);
+                }
+                else {
+                    $('#user_edit_form_groupesAcces').prop('disabled', false).parent('div').children('input.select-dropdown').prop('disabled', false);
+                }
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends '@App/layout.html.twig' %}
+
+{%  block title %}Ajout d'un individu {% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active"><a href="{{ path("individu_index") }}">Gestion des individus</a></li>
+    <li class="breadcrumb-item">Ajout d'un individu</li>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <!-- First row -->
+        <div class="row">
+            <!-- First column -->
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 mb-1">
+                        <div class="card">
+                            <div class="card-block">
+                                {{ include("@App/individu/form.html.twig") }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

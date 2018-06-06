@@ -1,0 +1,31 @@
+{% extends '@App/layout.html.twig' %}
+
+{%  block title %}Modification de {{ individu.prenomNom }} {% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active"><a href="{{ path("individu_index") }}">Gestion des individus</a></li>
+    <li class="breadcrumb-item">Modification de {{ individu.prenomNom }}</li>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <!-- First row -->
+        <div class="row">
+            <!-- First column -->
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-12 mb-1">
+                        <div class="card">
+                            <div class="card-block">
+                                {{ include("@App/individu/form.html.twig") }}
+                                {{ form_start(delete_form, {'attr': {'class': 'd-inline float-md-right', 'onSubmit': 'return confirm("' ~ confirm_message ~ '")'}}) }}
+                                <button type="submit" class="btn btn-danger align-content-center">Supprimer l'individu</button>
+                                {{ form_rest(delete_form) }}
+                                {{ form_end(delete_form) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
